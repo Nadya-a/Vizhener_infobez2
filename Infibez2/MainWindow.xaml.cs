@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +17,6 @@ using System.Text.RegularExpressions;
 
 namespace Infibez2
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         char[] EN = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -36,25 +33,12 @@ namespace Infibez2
         private void Decipher_Click(object sender, RoutedEventArgs e)
         {
             bool check = Language_Check(Message.Text);
-            //bool check1 = Regex.IsMatch(Key.Text, @"^[a-zA-ZА-Яа-я]+$");
-            /* if (!check1)
-             {
-                 MessageBox.Show("Ключ должен содержать только буквы!");
-                 Key.Text = "";
-             } */
-            // else
-            //{
             if (check)
             {
                 var dechipher = Cipher.Text;
                 dechipher = Dechipher(dechipher);
                 Dechipherr.Text = dechipher;
             }
-            //
-            //}
-
-            
-
         }
 
         private string Dechipher(string dechipher)
@@ -67,7 +51,7 @@ namespace Infibez2
 
             char[] message = dechipher.ToCharArray(); // Превращаем сообщение в массив символов.
             char[] key = Key.Text.ToLower().ToCharArray(); // Превращаем ключ в массив символов.
-            char[] alphavit = ConvertAlphavit();
+            char[] alphavit = ConvertAlphavit(); //функция для передачи массива символов на русском/английском языке, смотря что выбрали
 
             // Перебираем каждый символ сообщения
             for (int i = 0; i < message.Length; i++)
@@ -130,7 +114,7 @@ namespace Infibez2
 
         private void Cipher_Click(object sender, RoutedEventArgs e)
         {
-            bool check = Language_Check(Message.Text);
+            bool check = Language_Check(Message.Text); 
             string key = Key.Text.Replace(" ", "");
             bool check1 = KeyCheck(key);
             if (!check1)
@@ -140,9 +124,9 @@ namespace Infibez2
             }
             else
             {
-                //почему открывается только один раз??????????????!!
                 if (check == false)
                 {
+                    //выпендрежное окно с предупреждением, открывалось всего один раз, дальше не срабатывало
                     /* ToolTip cm = this.FindResource("toolTrip") as ToolTip;
                      cm.PlacementTarget = Message;
                      cm.IsOpen = true;
@@ -151,16 +135,15 @@ namespace Infibez2
                 }
                 if (check == true)
                 {
-                    //var chipher = new List<string>();
                     var chipher = Message.Text.Replace(" ", "");
                     Message.Text = chipher;
                     chipher = Chipher(chipher);
-                    //string combinedString = string.Join(" ", chipher);
                     Cipher.Text = chipher;
                 }
             }
         }
 
+        //проверка на каком языке ключ
         private bool KeyCheck(string key)
         {
             if (IsRU) return Regex.IsMatch(key, @"^[А-Яа-я]+$");
@@ -178,7 +161,7 @@ namespace Infibez2
 
             char[] massage = chipher.ToCharArray(); 
             char[] key = Key.Text.ToLower().ToCharArray(); 
-            char[] alphavit = ConvertAlphavit();
+            char[] alphavit = ConvertAlphavit(); //функция для передачи массива символов на русском/английском языке, смотря что выбрали
             // Перебираем каждый символ сообщения
             for (int i = 0; i < massage.Length; i++)
             {
@@ -232,40 +215,22 @@ namespace Infibez2
             return s;
         }
 
+        //функция для передачи массива символов на русском/английском языке, смотря что выбрали
         private char[] ConvertAlphavit()
         {
-            var result = new List<char>();
-            if (IsRU)
+            var result = new List<char>(); //пока пустой список символов
+            if (IsRU) //если выбрали русский - возвращается массив русских сомволов
             {
                 for (int i = 0; i < RU.Length; i++)
                     result.Add(RU[i]);
             }
-            if (IsEN)
+            if (IsEN) //если выбрали англ - возвращается массив англ сомволов
             {
                 for (int i = 0; i < EN.Length; i++)
                     result.Add(EN[i]);
             }
-            return result.ToArray();
+            return result.ToArray(); //список переформатируется в массив
         } 
-
-
-        /*   private char[] Words_chipher(char[] word, string key)
-           {
-               char[] chipher = new char[0];
-
-               if (key > 0)
-               {
-                   chipher = Word_plus_operation(word, key);
-               }
-
-               if (key < 0)
-               {
-                   key = key * (-1);
-                   chipher = Word_minus_operation(word, key);
-               } 
-
-               return chipher;} */
-
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
@@ -291,7 +256,8 @@ namespace Infibez2
             IsRU = false;
         }
 
-        private bool Language_Check(string str)
+        //проверка на каком языке написана строка
+        private bool Language_Check(string str) 
         {
             if (String.IsNullOrEmpty(str))
             {
@@ -302,26 +268,22 @@ namespace Infibez2
             {
                 str.ToLower();
 
-                byte[] b = System.Text.Encoding.Default.GetBytes(str);
+                byte[] b = System.Text.Encoding.Default.GetBytes(str); //текст переводится в байты
 
 
-                int angl_count = 0, rus_count = 0;
+                int angl_count = 0, rus_count = 0; //переменные для подсчета количества рус/англ символов
 
                 foreach (byte bt in b)
                 {
-                    if ((bt >= 97) && (bt <= 122)) angl_count++;
+                    if ((bt >= 97) && (bt <= 122)) angl_count++; //англ/рус символы имеют свои номера в кодировке, например английский алфавит с 97 до 122 номер
                     if ((bt >= 192) && (bt <= 239)) rus_count++;
                 }
-
-
 
                 if (angl_count > rus_count && IsEN == true) return true;
                 else if (angl_count < rus_count && IsRU == true) return true;
                 else if (angl_count != 0 && rus_count != 0) return false;
-                else if (str.Contains("ё")) return true;
+                else if (str.Contains("ё")) return true; //отдельный обработчик для ё, ее почему-то игнорировало...
                 else return false;
-                // if (angl_count < rus_count) return Language.Russian;
-                //return Language.Unknown;
             }
         }
         private void Clear_Click(object sender, RoutedEventArgs e)
